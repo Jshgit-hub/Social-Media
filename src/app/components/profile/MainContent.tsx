@@ -211,7 +211,7 @@ export default function MainContent() {
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, 50vw"
                         />
-                        {/* Optional: Add a button to clear the selected image */}
+
                         <Button
                             variant="destructive"
                             size="sm"
