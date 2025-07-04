@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Input } from '@/components/ui/input'; // Shadcn Input
-import { Button } from '@/components/ui/button'; // Shadcn Button
+import { Input } from '@/components/ui/input';
+
 
 export default function Header() {
     return (

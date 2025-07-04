@@ -115,7 +115,7 @@ export default function MainContent() {
                 const filePath = `${uuidv4()}.${fileExtension}`;
                 console.log("Attempting to upload file to:", filePath);
 
-                const { data, error: uploadError } = await supabase.storage
+                const { error: uploadError } = await supabase.storage
                     .from(WALL_PHOTOS_BUCKET)
                     .upload(filePath, selectedFile, {
                         cacheControl: '3600',
@@ -159,10 +159,18 @@ export default function MainContent() {
             setSelectedFile(null);
             setImagePreviewUrl(null); // Clear the preview after successful share
 
-        } catch (err: any) {
+        } catch (err: unknown) { // Changed 'err: Error' to 'err: unknown'
             console.error('Error sharing message or uploading file:', err);
-            setError(`Failed to share message: ${err.message || 'Unknown error'}`);
-            alert(`Failed to share message: ${err.message || 'Unknown error'}. Check console for details.`);
+            let errorMessage = 'Unknown error';
+            // Safely check if err is an instance of Error before accessing .message
+            if (err instanceof Error) {
+                errorMessage = err.message;
+            } else if (typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string') {
+                // Fallback for objects that have a message property but aren't Error instances
+                errorMessage = err.message;
+            }
+            setError(`Failed to share message: ${errorMessage}. Check console for details.`);
+            alert(`Failed to share message: ${errorMessage}. Check console for details.`);
         } finally {
             setSharing(false);
         }
@@ -193,7 +201,7 @@ export default function MainContent() {
                     {selectedFile && <span className="text-gray-600 text-sm italic">{selectedFile.name}</span>}
                 </div>
 
-
+                {/* Image Preview Area */}
                 {imagePreviewUrl && (
                     <div className="mb-4 relative w-full h-48 overflow-hidden rounded-lg border border-gray-200">
                         <Image
@@ -203,7 +211,7 @@ export default function MainContent() {
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, 50vw"
                         />
-
+                        {/* Optional: Add a button to clear the selected image */}
                         <Button
                             variant="destructive"
                             size="sm"
@@ -233,7 +241,7 @@ export default function MainContent() {
                     </span>
                 </div>
                 <div className="flex justify-between items-center">
-
+                    {/* Removed "New Privacy Control" div for brevity, add back if needed */}
                     <Button
                         onClick={handleShare}
                         disabled={isShareDisabled}
